@@ -87,6 +87,32 @@ export const constantRoutes = [
         meta: { title: '个人中心', icon: 'user' }
       }
     ]
+  },
+  {
+    path: '/bbs',
+    component: Layout,
+    hidden: true,
+    children: [
+      {
+        path: 'post',
+        component: () => import('@/views/bbs/post/index'),
+        name: 'Post',
+        meta: { title: '帖子管理', icon: 'post' }
+      },
+      {
+        path: 'post/detail/:postId',
+        component: () => import('@/views/bbs/post/detail'),
+        name: 'PostDetail',
+        meta: { title: '帖子详情', icon: 'post' },
+        hidden: true
+      },
+      {
+        path: 'category',
+        component: () => import('@/views/bbs/category/index'),
+        name: 'Category',
+        meta: { title: '帖子分类', icon: 'category' }
+      }
+    ]
   }
 ]
 
