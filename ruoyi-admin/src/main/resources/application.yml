@@ -47,6 +47,9 @@ user:
 
 # Spring配置
 spring:
+  # 允许 Bean 定义覆盖
+  main:
+    allow-bean-definition-overriding: true
   # 资源信息
   messages:
     # 国际化资源文件路径
