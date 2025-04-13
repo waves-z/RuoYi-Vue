@@ -168,7 +168,8 @@ public class BbsPostController extends BaseController {
      */
     @GetMapping("/latest")
     public AjaxResult getLatestPosts() {
-        return success(bbsPostService.selectLatestPostList());
+        BbsPost bbsPost = new BbsPost();
+        return success(bbsPostService.selectLatestPostList(bbsPost));
     }
 
     /**

@@ -1,7 +1,7 @@
 package com.ruoyi.test;
 
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 public class PasswordTest {
     @Test
