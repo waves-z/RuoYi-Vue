@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.system.mapper.BbsPostMapper">
+    
+    <resultMap type="BbsPost" id="BbsPostResult">
+        <result property="postId"    column="post_id"    />
+        <result property="postTitle"    column="post_title"    />
+        <result property="postContent"    column="post_content"    />
+        <result property="categoryId"    column="category_id"    />
+        <result property="categoryName"    column="category_name"    />
+        <result property="authorId"    column="author_id"    />
+        <result property="authorName"    column="author_name"    />
+        <result property="status"    column="status"    />
+        <result property="viewCount"    column="view_count"    />
+        <result property="likeCount"    column="like_count"    />
+        <result property="commentCount"    column="comment_count"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="remark"    column="remark"    />
+    </resultMap>
+
+    <sql id="selectBbsPostVo">
+        select p.post_id, p.post_title, p.post_content, p.category_id, c.category_name, 
+               p.author_id, u.nick_name as author_name, p.status, p.view_count,
+               (select count(1) from bbs_like l where l.post_id = p.post_id) as like_count,
+               (select count(1) from bbs_comment cm where cm.post_id = p.post_id) as comment_count,
+               p.create_by, p.create_time, p.update_by, p.update_time, p.remark
+        from bbs_post p
+        left join bbs_category c on p.category_id = c.category_id
+        left join sys_user u on p.author_id = u.user_id
+    </sql>
+
+    <select id="selectBbsPostList" parameterType="BbsPost" resultMap="BbsPostResult">
+        <include refid="selectBbsPostVo"/>
+        <where>  
+            <if test="postTitle != null  and postTitle != ''"> and p.post_title like concat('%', #{postTitle}, '%')</if>
+            <if test="categoryId != null "> and p.category_id = #{categoryId}</if>
+            <if test="authorName != null and authorName != ''"> and u.nick_name = #{authorName}</if>
+            <choose>
+                <when test="isAdmin != null and isAdmin == true">
+                    <if test="status != null and status != ''"> and p.status = #{status}</if>
+                </when>
+                <otherwise>
+                    <choose>
+                        <when test="authorName != null and authorName != ''">
+                            and 1=1
+                        </when>
+                        <otherwise>
+                            and p.status = '0'
+                        </otherwise>
+                    </choose>
+                </otherwise>
+            </choose>
+        </where>
+        <choose>
+            <when test="orderByColumn != null and orderByColumn != ''">
+                order by p.${orderByColumn} ${isAsc == 'asc' ? 'asc' : 'desc'}
+            </when>
+            <otherwise>
+                order by p.create_time desc
+            </otherwise>
+        </choose>
+    </select>
+    
+    <select id="selectBbsPostByPostId" parameterType="Long" resultMap="BbsPostResult">
+        <include refid="selectBbsPostVo"/>
+        where p.post_id = #{postId}
+    </select>
+
+    <select id="selectHotPostList" resultMap="BbsPostResult">
+        <include refid="selectBbsPostVo"/>
+        where p.status = '0'
+        order by p.view_count desc, p.like_count desc
+        limit 10
+    </select>
+
+    <select id="selectLatestPostList" resultMap="BbsPostResult">
+        <include refid="selectBbsPostVo"/>
+        where p.status = '0'
+        order by p.create_time desc
+        limit 10
+    </select>
+        
+    <insert id="insertBbsPost" parameterType="BbsPost" useGeneratedKeys="true" keyProperty="postId">
+        insert into bbs_post
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="postTitle != null">post_title,</if>
+            <if test="postContent != null">post_content,</if>
+            <if test="categoryId != null">category_id,</if>
+            <if test="categoryName != null">category_name,</if>
+            <if test="authorId != null">author_id,</if>
+            <if test="authorName != null">author_name,</if>
+            <if test="status != null">status,</if>
+            <if test="viewCount != null">view_count,</if>
+            <if test="likeCount != null">like_count,</if>
+            <if test="commentCount != null">comment_count,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="remark != null">remark,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="postTitle != null">#{postTitle},</if>
+            <if test="postContent != null">#{postContent},</if>
+            <if test="categoryId != null">#{categoryId},</if>
+            <if test="categoryName != null">#{categoryName},</if>
+            <if test="authorId != null">#{authorId},</if>
+            <if test="authorName != null">#{authorName},</if>
+            <if test="status != null">#{status},</if>
+            <if test="viewCount != null">#{viewCount},</if>
+            <if test="likeCount != null">#{likeCount},</if>
+            <if test="commentCount != null">#{commentCount},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="remark != null">#{remark},</if>
+         </trim>
+    </insert>
+
+    <update id="updateBbsPost" parameterType="BbsPost">
+        update bbs_post
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="postTitle != null">post_title = #{postTitle},</if>
+            <if test="postContent != null">post_content = #{postContent},</if>
+            <if test="categoryId != null">category_id = #{categoryId},</if>
+            <if test="categoryName != null">category_name = #{categoryName},</if>
+            <if test="authorId != null">author_id = #{authorId},</if>
+            <if test="authorName != null">author_name = #{authorName},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="viewCount != null">view_count = #{viewCount},</if>
+            <if test="likeCount != null">like_count = #{likeCount},</if>
+            <if test="commentCount != null">comment_count = #{commentCount},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="remark != null">remark = #{remark},</if>
+        </trim>
+        where post_id = #{postId}
+    </update>
+
+    <delete id="deleteBbsPostByPostId" parameterType="Long">
+        delete from bbs_post where post_id = #{postId}
+    </delete>
+
+    <delete id="deleteBbsPostByPostIds" parameterType="String">
+        delete from bbs_post where post_id in 
+        <foreach item="postId" collection="array" open="(" separator="," close=")">
+            #{postId}
+        </foreach>
+    </delete>
+
+    <update id="updatePostStatus" parameterType="BbsPost">
+        update bbs_post
+        <set>
+            <if test="status != null">status = #{status},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime}</if>
+        </set>
+        where post_id = #{postId}
+    </update>
+
+    <update id="incrementViewCount" parameterType="Long">
+        update bbs_post set view_count = view_count + 1 where post_id = #{postId}
+    </update>
+
+    <update id="incrementLikeCount" parameterType="Long">
+        update bbs_post set like_count = like_count + 1 where post_id = #{postId}
+    </update>
+
+    <update id="incrementCommentCount" parameterType="Long">
+        update bbs_post set comment_count = comment_count + 1 where post_id = #{postId}
+    </update>
+</mapper> 
