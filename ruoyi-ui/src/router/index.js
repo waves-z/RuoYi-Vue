@@ -91,13 +91,15 @@ export const constantRoutes = [
   {
     path: '/bbs',
     component: Layout,
-    hidden: false,
+    hidden: true,
+    meta: { title: '论坛管理', icon: 'example' },   
     children: [
       {
         path: 'post',
         component: () => import('@/views/bbs/post/index'),
         name: 'Post',
-        meta: { title: '帖子管理', icon: 'post', roles: ['admin', 'common'] }
+        meta: { title: '帖子管理', icon: 'post' },
+        hidden: true
       },
       {
         path: 'post/detail/:postId',
@@ -117,7 +119,8 @@ export const constantRoutes = [
         path: 'category',
         component: () => import('@/views/bbs/category/index'),
         name: 'Category',
-        meta: { title: '帖子分类', icon: 'category', roles: ['admin'] }
+        meta: { title: '帖子分类', icon: 'category' },
+        hidden: true
       }
     ]
   }

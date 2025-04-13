@@ -24,8 +24,11 @@ public interface IBbsPostService {
 
     /**
      * 查询最新帖子列表
+     * 
+     * @param bbsPost 帖子信息
+     * @return 帖子集合
      */
-    public List<BbsPost> selectLatestPostList();
+    public List<BbsPost> selectLatestPostList(BbsPost bbsPost);
 
     /**
      * 新增帖子

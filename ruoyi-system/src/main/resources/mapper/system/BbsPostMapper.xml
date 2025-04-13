@@ -45,14 +45,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     <if test="status != null and status != ''"> and p.status = #{status}</if>
                 </when>
                 <otherwise>
-                    <choose>
-                        <when test="authorName != null and authorName != ''">
-                            and 1=1
-                        </when>
-                        <otherwise>
-                            and p.status = '0'
-                        </otherwise>
-                    </choose>
+                    and (p.status = '0' or p.author_id = #{userId})
                 </otherwise>
             </choose>
         </where>

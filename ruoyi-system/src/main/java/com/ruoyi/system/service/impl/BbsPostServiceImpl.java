@@ -47,10 +47,13 @@ public class BbsPostServiceImpl implements IBbsPostService {
 
     /**
      * 查询最新帖子列表
+     * 
+     * @param bbsPost 帖子信息
+     * @return 帖子集合
      */
     @Override
-    public List<BbsPost> selectLatestPostList() {
-        return bbsPostMapper.selectLatestPostList();
+    public List<BbsPost> selectLatestPostList(BbsPost bbsPost) {
+        return bbsPostMapper.selectBbsPostList(bbsPost);
     }
 
     /**

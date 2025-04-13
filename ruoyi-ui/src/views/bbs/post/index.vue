@@ -42,9 +42,7 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item>
-        <el-checkbox v-model="onlyMine" @change="handleOnlyMineChange">只看我的</el-checkbox>
-      </el-form-item>
+
       <el-form-item>
         <el-button type="primary" icon="el-icon-search" size="mini" @click="handleQuery">搜索</el-button>
         <el-button icon="el-icon-refresh" size="mini" @click="resetQuery">重置</el-button>
@@ -92,7 +90,9 @@
               </span>
             </div>
           </div>
-          <div class="post-content">{{ post.postContent }}</div>
+          <div class="post-content">
+  {{ stripHtml(post.postContent).slice(0, 100) }}{{ post.postContent.length > 100 ? '...' : '' }}
+</div>
           <div class="post-footer">
             <div class="post-stats">
               <span class="stat-item" style="cursor: pointer;">
@@ -473,6 +473,10 @@ export default {
         }
       });
     },
+    stripHtml(html) {
+  if (!html) return '';
+  return html.replace(/<[^>]+>/g, '').replace(/&nbsp;/g, ' ').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+},
     /** 删除按钮操作 */
     handleDelete(row) {
       const postIds = row.postId || this.ids;
