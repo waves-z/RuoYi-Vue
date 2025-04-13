@@ -42,5 +42,5 @@ module.exports = {
    */
   errorLog: 'production',
 
-  title: '论坛管理系统'
+  title: '校园论坛'
 }
