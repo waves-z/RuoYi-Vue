@@ -91,13 +91,13 @@ export const constantRoutes = [
   {
     path: '/bbs',
     component: Layout,
-    hidden: true,
+    hidden: false,
     children: [
       {
         path: 'post',
         component: () => import('@/views/bbs/post/index'),
         name: 'Post',
-        meta: { title: '帖子管理', icon: 'post' }
+        meta: { title: '帖子管理', icon: 'post', roles: ['admin', 'common'] }
       },
       {
         path: 'post/detail/:postId',
@@ -107,10 +107,17 @@ export const constantRoutes = [
         hidden: true
       },
       {
+        path: 'post/edit/:postId',
+        component: () => import('@/views/bbs/post/edit'),
+        name: 'PostEdit',
+        meta: { title: '编辑帖子', icon: 'post' },
+        hidden: true
+      },
+      {
         path: 'category',
         component: () => import('@/views/bbs/category/index'),
         name: 'Category',
-        meta: { title: '帖子分类', icon: 'category' }
+        meta: { title: '帖子分类', icon: 'category', roles: ['admin'] }
       }
     ]
   }

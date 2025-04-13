@@ -50,9 +50,9 @@
                       {{ post.likes }}
                     </span>
                   </div>
-          </div>
-        </el-card>
-      </el-col>
+                </div>
+              </el-card>
+            </el-col>
           </el-row>
         </div>
 
@@ -91,7 +91,7 @@
                     </span>
                   </div>
                 </div>
-        </el-card>
+              </el-card>
             </el-col>
           </el-row>
         </div>
@@ -100,17 +100,16 @@
       <!-- 右侧推荐板块 -->
       <el-col :span="8">
         <div class="recommend-section">
-          <h2>推荐板块</h2>
-          <el-row :gutter="20">
-            <el-col :span="6" v-for="category in categoryList" :key="category.categoryId">
-              <el-card shadow="hover" class="category-card" @click.native="handleCategoryClick(category)">
-                <div class="category-content">
-                  <i class="el-icon-folder"></i>
-                  <span>{{ category.categoryName }}</span>
+          <h2 class="section-title">推荐板块</h2>
+          <div class="category-grid">
+            <div v-for="category in categoryList" 
+                 :key="category.categoryId" 
+                 class="category-item" 
+                 @click="handleCategoryClick(category)">
+              <i :class="getCategoryIcon(category.categoryName)"></i>
+              <span class="category-name">{{ category.categoryName }}</span>
+            </div>
           </div>
-        </el-card>
-            </el-col>
-          </el-row>
         </div>
 
         <!-- 发帖按钮 -->
@@ -197,10 +196,12 @@ export default {
       });
     },
     handleCategoryClick(category) {
-      this.$router.push({
+      this.$router.replace({
         path: '/bbs/post',
         query: { 
           categoryId: category.categoryId,
+          pageNum: 1,
+          pageSize: 10,
           orderByColumn: 'create_time',
           isAsc: 'desc'
         }
@@ -230,6 +231,15 @@ export default {
     parseTime(time) {
       // 实现时间解析逻辑
       return time;
+    },
+    getCategoryIcon(categoryName) {
+      const iconMap = {
+        '最新帖子': 'el-icon-document',
+        '交友互动': 'el-icon-user-solid',
+        '风景摄影': 'el-icon-picture-outline',
+        '通知公告': 'el-icon-bell'
+      };
+      return iconMap[categoryName] || 'el-icon-folder';
     }
   }
 };
@@ -305,33 +315,59 @@ export default {
 }
 
 .recommend-section {
-  margin-bottom: 30px;
+  background: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
 }
 
-.category-card {
-  cursor: pointer;
+.section-title {
+  font-size: 18px;
+  color: #303133;
   margin-bottom: 20px;
+  font-weight: 600;
+  border-bottom: 2px solid #409EFF;
+  padding-bottom: 10px;
 }
 
-.category-content {
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+}
+
+.category-item {
   display: flex;
   align-items: center;
-  justify-content: center;
-  padding: 20px;
+  padding: 15px;
+  background: #f5f7fa;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.category-content i {
+.category-item:hover {
+  background: #ecf5ff;
+  transform: translateY(-2px);
+}
+
+.category-item i {
   font-size: 24px;
+  color: #409EFF;
   margin-right: 10px;
 }
 
-.category-content span {
+.category-name {
   font-size: 16px;
+  color: #606266;
+  font-weight: 500;
 }
 
 .create-post-btn {
   width: 100%;
   margin-top: 20px;
+  height: 40px;
+  font-size: 16px;
 }
 </style>
 
